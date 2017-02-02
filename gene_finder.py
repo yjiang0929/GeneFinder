@@ -140,9 +140,12 @@ def longest_ORF(dna):
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
-    # TODO: implement this
-    pass
-
+    orf_list = find_all_ORFs_both_strands(dna)
+    longest = ''
+    for i in orf_list:
+        if len(i)>len(longest):
+            longest = i
+    return longest
 
 def longest_ORF_noncoding(dna, num_trials):
     """ Computes the maximum length of the longest ORF over num_trials shuffles
@@ -151,9 +154,13 @@ def longest_ORF_noncoding(dna, num_trials):
         dna: a DNA sequence
         num_trials: the number of random shuffles
         returns: the maximum length longest ORF """
-    # TODO: implement this
-    pass
-
+    longest = 0
+    for i in range(num_trials):
+        dna = shuffle_string(dna)
+        current = len(longest_ORF(dna))
+        if current > longest:
+            longest = current
+    return longest
 
 def coding_strand_to_AA(dna):
     """ Computes the Protein encoded by a sequence of DNA.  This function
@@ -169,9 +176,14 @@ def coding_strand_to_AA(dna):
         >>> coding_strand_to_AA("ATGCCCGCTTT")
         'MPA'
     """
-    # TODO: implement this
-    pass
-
+    i = 0
+    aminos = ''
+    while i < len(dna):
+        if len(dna)-i >= 3:
+            dna_fragment = dna[i:i+3]
+            aminos = aminos + aa_table[dna_fragment]
+        i += 3
+    return aminos
 
 def gene_finder(dna):
     """ Returns the amino acid sequences that are likely coded by the specified dna
@@ -179,10 +191,17 @@ def gene_finder(dna):
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    # TODO: implement this
-    pass
+    dna_list = find_all_ORFs_both_strands(dna)
+    amino_list = []
+    for i in range(len(dna_list)):
+        amino = coding_strand_to_AA(dna_list[i])
+        amino_list.append(amino)
+    return amino_list
+    #return coding_strand_to_AA(longest_ORF(dna))
 
 if __name__ == "__main__":
     import doctest
-    doctest.run_docstring_examples(find_all_ORFs_both_strands,globals(),verbose = True)
+    doctest.run_docstring_examples(coding_strand_to_AA,globals(),verbose = True)
+    dna = load_seq("./data/X73525.fa")
+    print(gene_finder(dna))
     #doctest.testmod()
