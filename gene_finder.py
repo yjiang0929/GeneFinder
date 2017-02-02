@@ -193,9 +193,11 @@ def gene_finder(dna):
     """
     dna_list = find_all_ORFs_both_strands(dna)
     amino_list = []
+    threhold = longest_ORF_noncoding(dna,1500)
     for i in range(len(dna_list)):
-        amino = coding_strand_to_AA(dna_list[i])
-        amino_list.append(amino)
+        if len(dna_list[i])>= threhold:
+            amino = coding_strand_to_AA(dna_list[i])
+            amino_list.append(amino)
     return amino_list
     #return coding_strand_to_AA(longest_ORF(dna))
 
